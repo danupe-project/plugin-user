@@ -1,0 +1,17 @@
+{
+    "name": "danupe/plugin-user",
+    "description": "The User Plugin",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Danupe\\Plugin\\User\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.0",
+        "danupe/core": "dev-main",
+        "danupe/plugin-database": "dev-main"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
