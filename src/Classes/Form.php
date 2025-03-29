@@ -90,7 +90,7 @@ class Form
     public static function csrf(string $token="")
     {
         if(empty($token)){
-            $token = $_SESSION['csrf_token'] ?? '';
+            $token = danupe()->session()->get('csrf_token') ?? '';
         }
         return "<input type=\"hidden\" name=\"csrf_token\" value=\"$token\">";
     }
