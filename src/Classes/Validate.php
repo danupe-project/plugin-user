@@ -32,27 +32,39 @@ class Validate
                     if (($data[$field] ?? '') !== ($data[$otherField] ?? '')) {
                         $errors[$field][] = "$field must match $otherField.";
                     }
+                } elseif (strpos($rulePart, 'unique:') === 0) {
+                    $uniqueParts = explode(',', str_replace('unique:', '', $rulePart));
+                    $table = $uniqueParts[0] ?? null;
+                    if ($table && self::isDuplicate($table, $field, $data[$field] ?? '')) {
+                        $errors[$field][] = "$field must be unique.";
+                    }
                 }
             }
         }
 
         if (!empty($errors)) {
-            $_SESSION['old'] = $data;
-            $_SESSION['validation_errors'] = $errors;
+            danupe()->session()->set('old', $data);
+            danupe()->session()->set('validation_errors', $errors);
             return false;
         }
 
-        $_SESSION['validation_errors'] = [];
+        danupe()->session()->set('validation_errors', []);
         return true;
+    }
+
+    private static function isDuplicate(string $table, string $field, $value, $id = null)
+    {
+        $query = danupe()->plugin('database','database')->table($table)->where([$field, $value]);
+        return $query->exists();
     }
 
     public static function getErrors()
     {
-        return $_SESSION['validation_errors'] ?? [];
+        return danupe()->session()->get('validation_errors') ?? [];
     }
 
     public static function isValid()
     {
-        return empty($_SESSION['validation_errors']);
+        return empty(danupe()->session()->get('validation_errors'));
     }
 }
