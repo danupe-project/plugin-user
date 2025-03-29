@@ -22,17 +22,22 @@ class UserController extends Controller
 
         $validator = new Validate();
         $rules = [
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             'password_confirmation' => 'required|min:6|same:password',
-            'role_id' => 'required'
+            'role' => 'required'
         ];
 
         $validationResult = $validator->validate(danupe()->input()->all(), $rules);
 
+
+        $data = danupe()->input()->only(['email', 'password', 'role']);
+        $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
+
         if ($validationResult) {
             $user = new User();
-            $user->save(danupe()->input()->all());
+            $user->save($data);
+            return $this->redirect( '/'.danupe()->env()->get('DANUPE_ADMIN_PREFIX').'/users/create', 'User created successfully');
         } else {
             return $this->redirectWithErrors( '/'.danupe()->env()->get('DANUPE_ADMIN_PREFIX').'/users/create', $validator->getErrors());
         }
@@ -41,15 +46,12 @@ class UserController extends Controller
 
     public function update_post(Request $request, Response $response, array $args)
     {
-        $postId = $args['id'] ?? null;
-        $data = $request->getParsedBody();
-        // return $response->withJson(['message' => 'Post updated successfully']);
+        return $this->redirect( '/'.danupe()->env()->get('DANUPE_ADMIN_PREFIX').'/users/create', 'User updated successfully');
     }
 
     public function delete_post(Request $request, Response $response, array $args)
     {
-        $postId = $args['id'] ?? null;
-        // return $response->withJson(['message' => 'Post deleted successfully']);
+        return $this->redirect( '/'.danupe()->env()->get('DANUPE_ADMIN_PREFIX').'/users/create', 'User updated successfully');
     }
 
 
