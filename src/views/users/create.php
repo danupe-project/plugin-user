@@ -1,16 +1,15 @@
 <?php
-
 danupe()->view()->get('plugin-user', 'header');
 
 use Danupe\Plugin\User\Classes\Form;
-use Danupe\Plugin\User\Models\Role;
 
 ?>
 <!--Container-->
 <div class="container w-full mx-auto pt-20">
 
     <div class="w-full px-4 md:px-0 md:mt-8 mb-16 text-gray-800 leading-normal">
-        <?php if (danupe()->session()->has('errors')): ?>
+
+    <?php if (danupe()->session()->has('errors')): ?>
             <div class="alert alert-danger">
                 <ul>
                     <?php foreach (danupe()->session()->get('errors') as $error): ?>
@@ -21,6 +20,25 @@ use Danupe\Plugin\User\Models\Role;
                 </ul>
             </div>
         <?php endif; ?>
+
+        <?php if (danupe()->session()->has('message') && is_array(danupe()->session()->get('message'))) : ?>
+            <div class="alert alert-success">
+                <ul>
+                    <?php foreach (danupe()->session()->get('message') as $error): ?>
+                        <?php foreach ($error as $key => $value): ?>
+                            <li><?php echo $value; ?></li>
+                        <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+        <?php if (danupe()->session()->has('message') && !is_array(danupe()->session()->get('message'))) : ?>
+            <div class="alert alert-success">
+                <?php echo danupe()->session()->get('message'); ?>
+            </div>
+        <?php endif; ?>
+
 
         <br />
 
@@ -46,13 +64,9 @@ use Danupe\Plugin\User\Models\Role;
                 <?php echo Form::password('password_confirmation', '', danupe()->session()->old('password_confirmation'), ['class' => 'form-input w-full']); ?>
             </div>
 
-            <?php
-            $roles = new Role();
-            ?>
-
             <div class="form-group">
                 <?php echo Form::label('role', 'Role', ['class' => 'block mb-1']); ?>
-                <?php echo Form::select('role_id', $roles->all('select'), null, ['class' => 'form-select w-full']); ?>
+                <?php echo Form::select('role', danupe()->plugin('user', 'role')->getAll(), null, ['class' => 'form-select w-full']); ?>
             </div>
 
             <div></div> <!-- Empty div for alignment -->
