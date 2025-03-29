@@ -35,7 +35,8 @@ class Validate
                 } elseif (strpos($rulePart, 'unique:') === 0) {
                     $uniqueParts = explode(',', str_replace('unique:', '', $rulePart));
                     $table = $uniqueParts[0] ?? null;
-                    if ($table && self::isDuplicate($table, $field, $data[$field] ?? '')) {
+                    $id = $uniqueParts[2] ?? null;
+                    if ($table && self::isDuplicate($table, $field, $data[$field] ?? '', $id)) {
                         $errors[$field][] = "$field must be unique.";
                     }
                 }
@@ -54,7 +55,11 @@ class Validate
 
     private static function isDuplicate(string $table, string $field, $value, $id = null)
     {
-        $query = danupe()->plugin('database','database')->table($table)->where([$field, $value]);
+        $query = danupe()->plugin('database', 'database')->table($table)->where([$field, $value]);
+        if ($id) {
+            $query->where(['id', '!=', $id]);
+        }
+        
         return $query->exists();
     }
 
