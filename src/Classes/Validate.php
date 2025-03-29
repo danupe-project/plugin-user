@@ -36,6 +36,9 @@ class Validate
                     $uniqueParts = explode(',', str_replace('unique:', '', $rulePart));
                     $table = $uniqueParts[0] ?? null;
                     $id = $uniqueParts[2] ?? null;
+                    if ($table && isset($data['id']) && $data['id'] == $id) {
+                        continue;
+                    }
                     if ($table && self::isDuplicate($table, $field, $data[$field] ?? '', $id)) {
                         $errors[$field][] = "$field must be unique.";
                     }
