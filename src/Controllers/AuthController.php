@@ -14,10 +14,10 @@ class AuthController
         $data = $request->getParsedBody();
 
         $database = new Database();
-        $user = $database->table('users')->where(['email' => danupe()->data()->get($data,'email')])->first();
+        $user = $database->table('users')->where(['email'=> danupe()->data()->get($data,'email')])->first();
 
         if ($user && password_verify($data['password'], danupe()->data()->get($user, 'password'))) {
-            $_SESSION['user'] = $user;
+            danupe()->session()->set('user',$user);
             return $response->withHeader('Location', '/' . $_ENV["DANUPE_ADMIN_PREFIX"] . '/dashboard')->withStatus(302);
         } else {
             $response->getBody()->write('Login fehlgeschlagen');
@@ -28,6 +28,6 @@ class AuthController
     public function logout_action(Request $request, Response $response)
     {
         session_destroy();
-        return $response->withHeader('Location', '/')->withStatus(302);
+        return $response->withHeader('Location', '/login')->withStatus(302);
     }
 }
