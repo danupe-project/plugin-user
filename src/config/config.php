@@ -55,7 +55,7 @@ return [
             'method' => 'GET',
             'roles' => ['user', 'admin'],
         ],
-        '/' . $prefix . '/users/edit/{id?}' => [
+        '/' . $prefix . '/users/edit/{id}' => [
             'controller' => 'Danupe\Plugin\User\Controllers\UserController',
             'action' => 'edit',
             'middlewares' => ['auth'],
