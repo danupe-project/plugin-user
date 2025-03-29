@@ -10,7 +10,7 @@ class Form
         $attr = self::buildAttributes($attributes);
         return "<input type=\"$type\" name=\"$name\" value=\"$value\" $attr>";
     }
-
+    
     public static function password(string $name, string $type = "password", string|null $value = "", array $attributes = [])
     {
         $attributes["class"] = ($attributes["class"] ?? "") . " border rounded px-4 py-2 w-full";
@@ -25,7 +25,7 @@ class Form
         return "<textarea name=\"$name\" $attr>$value</textarea>";
     }
 
-    public static function select(string $name, array $options = [], null|int $selected = null, array $attributes = [])
+    public static function select(string $name, array $options = [], null|int|string $selected = null, array $attributes = [])
     {
         $attributes['class'] = ($attributes['class'] ?? '') . ' border rounded px-4 py-2 w-full';
         $attr = self::buildAttributes($attributes);
