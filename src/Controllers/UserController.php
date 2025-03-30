@@ -19,6 +19,17 @@ class UserController extends Controller
         return $response;
     }
 
+    public function table(Request $request, Response $response)
+    {
+        $total = danupe()->plugin('database', 'database')->table('users')->count();
+        $users = new User();
+        $data = $users->all();
+        $this->json([
+            'total' => $total,
+            'data' => $data
+        ]);
+    }
+
     public function edit($request, $response, $args)
     {
         $user = new User();
@@ -91,9 +102,9 @@ class UserController extends Controller
         if ($validationResult) {
             $user = new User();
             $user->update($data);
-            return $this->redirectWithSuccess('/' . danupe()->env()->get('DANUPE_ADMIN_PREFIX') . '/users/edit/'.$id, 'User updated successfully');
+            return $this->redirectWithSuccess('/' . danupe()->env()->get('DANUPE_ADMIN_PREFIX') . '/users/edit/' . $id, 'User updated successfully');
         } else {
-            return $this->redirectWithErrors('/' . danupe()->env()->get('DANUPE_ADMIN_PREFIX') . '/users/edit/'.$id, $validator->getErrors());
+            return $this->redirectWithErrors('/' . danupe()->env()->get('DANUPE_ADMIN_PREFIX') . '/users/edit/' . $id, $validator->getErrors());
         }
     }
 
