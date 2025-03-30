@@ -13,7 +13,7 @@ class UserController extends Controller
     public function index($request, $response)
     {
         $users = new User();
-        $users = $users->all();
+        $users = $users->all(['id','email','role']);
 
         danupe()->view()->get('plugin-user', 'users/index', ['users' => $users, 'title' => 'user']);
         return $response;
@@ -64,7 +64,7 @@ class UserController extends Controller
         if ($validationResult) {
             $user = new User();
             $user->save($data);
-            return $this->redirect('/' . danupe()->env()->get('DANUPE_ADMIN_PREFIX') . '/users/create', 'User created successfully');
+            return $this->redirectWithSuccess('/' . danupe()->env()->get('DANUPE_ADMIN_PREFIX') . '/users/create', 'User created successfully');
         } else {
             return $this->redirectWithErrors('/' . danupe()->env()->get('DANUPE_ADMIN_PREFIX') . '/users/create', $validator->getErrors());
         }
