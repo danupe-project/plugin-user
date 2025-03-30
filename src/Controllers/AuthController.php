@@ -2,12 +2,13 @@
 
 namespace Danupe\Plugin\User\Controllers;
 
+use Danupe\Core\Classes\Controller;
 use Danupe\Plugin\Database\Classes\Database;
 use PDO;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class AuthController
+class AuthController extends Controller
 {
     public function login_post(Request $request, Response $response)
     {
@@ -20,8 +21,7 @@ class AuthController
             danupe()->session()->set('user',$user);
             return $response->withHeader('Location', '/' . $_ENV["DANUPE_ADMIN_PREFIX"] . '/dashboard')->withStatus(302);
         } else {
-            $response->getBody()->write('Login fehlgeschlagen');
-            return $response->withStatus(401);
+            return $this->redirectWithErrors('/login', 'Invalid email or password');
         }
     }
 
