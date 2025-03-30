@@ -27,6 +27,15 @@ return [
             'middlewares' => ['auth'],
             'roles' => ['user', 'admin'],
         ],
+        '/' . $prefix . '/js/littleBigTable.js' => [
+            'controller' => 'Danupe\Core\Classes\AssetController',
+            'action' => 'load',
+            'method' => 'GET',
+            'middlewares' => [],
+            'roles' => ['guest'],
+            'path' => danupe()->path()->plugin('plugin-user') . '/src/views/assets/js/littleBigTable.js',
+            'type' => 'javascript',
+        ],
         '/' . $prefix . '/login_post' => [
             'controller' => 'Danupe\Plugin\User\Controllers\AuthController',
             'action' => 'login_post',
@@ -44,6 +53,13 @@ return [
         '/' . $prefix . '/users' => [
             'controller' => 'Danupe\Plugin\User\Controllers\UserController',
             'action' => 'index',
+            'middlewares' => ['auth'],
+            'method' => 'GET',
+            'roles' => ['user', 'admin'],
+        ],
+        '/' . $prefix . '/users/table' => [
+            'controller' => 'Danupe\Plugin\User\Controllers\UserController',
+            'action' => 'table',
             'middlewares' => ['auth'],
             'method' => 'GET',
             'roles' => ['user', 'admin'],
