@@ -15,14 +15,18 @@
     <link rel="stylesheet" href="/<?php echo danupe()->plugin('user', 'admin')->getPrefix(); ?>/css/tailwind.output.css" />
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/rippleui@1.12.1/dist/css/styles.css" />
+
+
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" />
-
-
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.9/cdn.js"></script> -->
     <script
-      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
-      defer
-    ></script>
+        src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+        defer></script>
 
     <script src="/<?php echo danupe()->plugin('user', 'admin')->getPrefix(); ?>/js/littleBigTable.js"></script>
 
@@ -760,4 +764,4 @@
 
 
         <main class="h-full overflow-y-auto">
-          <div class="container px-6 mx-auto grid">
+            <div class="container px-6 mx-auto grid">
