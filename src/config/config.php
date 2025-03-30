@@ -8,9 +8,8 @@ return [
 
     'navigation' => [
         '/' . $prefix . '/dashboard' => ['title' => 'Dashboard', 'icon' => 'fa fa-home', 'sort' => 100, 'parent' => ''],
-        '/' . $prefix . '/profile' => ['title' => 'Profile', 'icon' => 'fa fa-user', 'sort' => 101, 'parent' => ''],
         '/' . $prefix . '/users' => ['title' => 'Users', 'icon' => 'fa fa-users', 'sort' => 102, 'parent' => ''],
-        '/' . $prefix . '/users/create' => ['title' => 'Users create', 'icon' => 'fa fa-users', 'sort' => 1, 'parent' => '/users'],
+        '/' . $prefix . '/users/create' => ['title' => 'Users create', 'icon' => 'fa fa-users', 'sort' => 1, 'parent' => '/' . $prefix . '/users'],
     ],
     'routes' => [
         '/login' => [
