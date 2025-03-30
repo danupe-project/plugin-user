@@ -38,7 +38,7 @@ danupe()->view()->get('plugin-user', 'header');
 
             <div></div> <!-- Empty div for alignment -->
 
-            <button type="submit" class="btn btn-primary w-full md:w-auto bg-white p-2 border rounded hover:bg-gray-200">Submit</button>
+            <?php echo danupe()->plugin('user','form')->submit(); ?>
         </form>
 
     </div>
