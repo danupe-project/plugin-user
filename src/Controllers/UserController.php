@@ -15,7 +15,7 @@ class UserController extends Controller
         $users = new User();
         $users = $users->all(['id','email','role']);
 
-        danupe()->view()->get('plugin-user', 'users/index', ['users' => $users, 'title' => 'user']);
+        danupe()->view()->get('plugin-user', 'users/index', ['users' => $users, 'title' => 'Users']);
         return $response;
     }
 
@@ -34,13 +34,13 @@ class UserController extends Controller
     {
         $user = new User();
         $user = $user->first(danupe()->data()->get($args, 'id'));
-        danupe()->view()->get('plugin-user', 'users/edit', ['user' => $user, 'title' => 'edit']);
+        danupe()->view()->get('plugin-user', 'users/edit', ['user' => $user, 'title' => 'Edit User']);
         return $response;
     }
 
     public function create(Request $request, Response $response)
     {
-        danupe()->view()->get('plugin-user', 'users/create', ['title' => 'Create']);
+        danupe()->view()->get('plugin-user', 'users/create', ['title' => 'Create User']);
         return $response;
     }
 

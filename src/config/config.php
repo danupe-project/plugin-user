@@ -7,9 +7,9 @@ return [
     ],
 
     'navigation' => [
-        '/' . $prefix . '/dashboard' => ['title' => 'Dashboard', 'icon' => 'fa fa-home', 'sort' => 100, 'parent' => ''],
-        '/' . $prefix . '/users' => ['title' => 'Users', 'icon' => 'fa fa-users', 'sort' => 102, 'parent' => ''],
-        '/' . $prefix . '/users/create' => ['title' => 'Users create', 'icon' => 'fa fa-users', 'sort' => 1, 'parent' => '/' . $prefix . '/users'],
+        '/' . $prefix . '/dashboard' => ['title' => 'Dashboard', 'icon' => 'fa fa-home', 'sort' => 1, 'parent' => ''],
+        '/' . $prefix . '/users' => ['title' => 'Users', 'icon' => 'fa fa-users', 'sort' => 100, 'parent' => ''],
+        '/' . $prefix . '/users/create' => ['title' => 'Users create', 'icon' => 'fa fa-users', 'sort' => 101, 'parent' => '/' . $prefix . '/users'],
     ],
     'routes' => [
         '/login' => [

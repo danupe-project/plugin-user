@@ -4,6 +4,11 @@
 
 <?php danupe()->view()->get('plugin-user', 'alert'); ?>
 
+<div class="mb-4">
+    <a href='/<?php echo danupe()->env()->get('DANUPE_ADMIN_PREFIX'); ?>/users' class="btn btn-solid-secondary">Users</a>
+</div>
+
+
 <form method="POST" action="/<?php echo danupe()->env()->get('DANUPE_ADMIN_PREFIX'); ?>/users/update_post" class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
 
