@@ -36,9 +36,6 @@ class Validate
                     $uniqueParts = explode(',', str_replace('unique:', '', $rulePart));
                     $table = $uniqueParts[0] ?? null;
                     $id = $uniqueParts[2] ?? null;
-                    if ($table && isset($data['id']) && $data['id'] == $id) {
-                        continue;
-                    }
                     if ($table && self::isDuplicate($table, $field, $data[$field] ?? '', $id)) {
                         $errors[$field][] = "$field must be unique.";
                     }
@@ -62,8 +59,17 @@ class Validate
         if ($id) {
             $query->where(['id', '!=', $id]);
         }
-        
-        return $query->exists();
+
+        if (!$query->first() && $id) {
+            return true;
+        } else {
+            $getId = danupe()->data()->get($query->first(['id']), 'id');
+
+            if ($getId == $id) {
+                return false;
+            }
+            return $query->exists();
+        }
     }
 
     public static function getErrors()
