@@ -47,7 +47,7 @@ class Form
 
     public static function submit(string $value = 'Submit', array $attributes = [])
     {
-        $attributes['class'] = ($attributes['class'] ?? '') . ' btn btn-solid-primary';
+        $attributes['class'] = ($attributes['class'] ?? 'btn btn-solid-primary');
         $attr = self::buildAttributes($attributes);
         return "<button type=\"submit\" $attr>$value</button>";
     }
