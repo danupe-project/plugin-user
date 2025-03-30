@@ -5,14 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title><?php echo danupe()->config()->get('core.meta.title');?></title>
+    <title><?php echo danupe()->config()->get('core.meta.title'); ?></title>
     <meta name="description" content="description here">
     <meta name="keywords" content="keywords,here">
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" />
-    <!--Replace with your tailwind.css once created-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js" integrity="sha256-XF29CBwU1MWLaGEnsELogU6Y6rcc5nCkhhx89nFMIDQ=" crossorigin="anonymous"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.9/cdn.js"></script>
+    <script src="/<?php echo danupe()->plugin('user','admin')->getPrefix(); ?>/js/littleBigTable.js"></script>
+
 </head>
 
 <body class="bg-gray-100 font-sans leading-normal tracking-normal">
@@ -24,7 +27,7 @@
 
             <div class="w-1/2 pl-2 md:pl-0">
                 <a class="text-gray-900 text-base xl:text-xl no-underline hover:no-underline font-bold" href="#">
-                    <?php echo danupe()->config()->get('core.meta.title');?>
+                    <?php echo danupe()->config()->get('core.meta.title'); ?>
                 </a>
             </div>
             <div class="w-1/2 pr-0">
@@ -32,7 +35,7 @@
 
                     <div class="relative text-sm">
                         <button id="userButton" class="flex items-center focus:outline-none mr-3">
-                            <!-- <img class="w-8 h-8 rounded-full mr-4" src="http://i.pravatar.cc/300" alt="Avatar of User"> --> <span class="hidden md:inline-block"><?php echo danupe()->session()->get('user.email');?></span>
+                            <!-- <img class="w-8 h-8 rounded-full mr-4" src="http://i.pravatar.cc/300" alt="Avatar of User"> --> <span class="hidden md:inline-block"><?php echo danupe()->session()->get('user.email'); ?></span>
                             <svg class="pl-2 h-2" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 129" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 129 129">
                                 <g>
                                     <path d="m121.3,34.6c-1.6-1.6-4.2-1.6-5.8,0l-51,51.1-51.1-51.1c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l53.9,53.9c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l53.9-53.9c1.7-1.6 1.7-4.2 0.1-5.8z" />
@@ -74,7 +77,7 @@
                         foreach ($value as $url => $navigationItem) {
                             if (danupe()->data()->get($navigationItem, 'parent', false) == false) { ?>
                                 <li class="mr-6 my-2 md:my-0">
-                                    <a href="<?php echo $url;?>" class="block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-pink-500">
+                                    <a href="<?php echo $url; ?>" class="block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-pink-500">
                                         <i class="<?php echo danupe()->data()->get($navigationItem, 'icon'); ?> mr-3"></i><span class="pb-1 md:pb-0 text-sm"><?php echo danupe()->data()->get($navigationItem, 'title'); ?></span>
                                     </a>
                                 </li>
