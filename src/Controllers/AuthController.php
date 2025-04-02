@@ -19,7 +19,7 @@ class AuthController extends Controller
 
         if ($user && password_verify($data['password'], danupe()->data()->get($user, 'password'))) {
             danupe()->session()->set('user',$user);
-            return $response->withHeader('Location', '/' . $_ENV["DANUPE_ADMIN_PREFIX"] . '/dashboard')->withStatus(302);
+            $this->redirectWithSuccess('/' . $_ENV["DANUPE_ADMIN_PREFIX"] . '/dashboard','Hello');
         } else {
             return $this->redirectWithErrors('/login', 'Invalid email or password');
         }
