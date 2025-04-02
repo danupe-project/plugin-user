@@ -105,6 +105,20 @@ return [
             'middlewares' => [],
             'roles' => ['guest'],
         ],
+        '/' . $prefix .'/' => [
+            'controller' => 'Danupe\Plugin\User\Controllers\HomeController',
+            'action' => 'dashboard',
+            'method' => 'GET',
+            'middlewares' => ['auth'],
+            'roles' => ['editor', 'user', 'admin'],
+        ],
+        '/' . $prefix  => [
+            'controller' => 'Danupe\Plugin\User\Controllers\HomeController',
+            'action' => 'dashboard',
+            'method' => 'GET',
+            'middlewares' => ['auth'],
+            'roles' => ['editor', 'user', 'admin'],
+        ],
         '/' . $prefix . '/dashboard' => [
             'controller' => 'Danupe\Plugin\User\Controllers\HomeController',
             'action' => 'dashboard',
