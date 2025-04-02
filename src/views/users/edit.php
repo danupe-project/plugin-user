@@ -2,7 +2,7 @@
 
 <?php danupe()->view()->get('plugin-user', 'pageTitle', ['title' => $title]); ?>
 
-<?php danupe()->view()->get('plugin-user', 'alert'); ?>
+
 
 <div class="mb-4">
     <a href='/<?php echo danupe()->env()->get('DANUPE_ADMIN_PREFIX'); ?>/users' class="btn btn-solid-secondary">Users</a>
