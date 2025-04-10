@@ -93,7 +93,7 @@ class UserController extends Controller
         $validationResult = $validator->validate(danupe()->input()->all(), $rules);
 
         if ($password) {
-            $data = danupe()->input()->only(['email', 'password', 'role']);
+            $data = danupe()->input()->only(['email', 'password', 'role','id']);
             $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
         } else {
             $data = danupe()->input()->only(['email', 'role', 'id']);
