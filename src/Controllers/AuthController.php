@@ -15,7 +15,8 @@ class AuthController extends Controller
         $data = $request->getParsedBody();
 
         $database = new Database();
-        $user = $database->table('users')->where(['email'=> danupe()->data()->get($data,'email')])->first();
+        $email = filter_var(danupe()->data()->get($data, 'email'), FILTER_SANITIZE_EMAIL);
+        $user = $database->table('users')->where(['email' => $email])->first();
 
         if ($user && password_verify($data['password'], danupe()->data()->get($user, 'password'))) {
             danupe()->session()->set('user',$user);
