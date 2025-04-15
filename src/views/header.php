@@ -111,7 +111,7 @@
                     </div>
 
                     <div class="flex mr-3">
-                        <a href="/" title="Go To Homepage">
+                        <a href="/" title="Go To Homepage" target="_blank">
                             <i class="fa-solid fa-object-group"></i>
                         </a>
                     </div>
