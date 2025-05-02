@@ -10,16 +10,16 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class UserController extends Controller
 {
-    public function index($request, $response)
+    public function index()
     {
         $users = new User();
         $users = $users->all(['id','email','role']);
 
         danupe()->view()->get('plugin-user', 'users/index', ['users' => $users, 'title' => 'Users']);
-        return $response;
+
     }
 
-    public function table(Request $request, Response $response)
+    public function table()
     {
         $total = danupe()->plugin('database', 'database')->table('users')->count();
         $users = new User();
@@ -30,21 +30,21 @@ class UserController extends Controller
         ]);
     }
 
-    public function edit($request, $response, $args)
+    public function edit($args)
     {
         $user = new User();
         $user = $user->first(danupe()->data()->get($args, 'id'));
         danupe()->view()->get('plugin-user', 'users/edit', ['user' => $user, 'title' => 'Edit User']);
-        return $response;
+
     }
 
-    public function create(Request $request, Response $response)
+    public function create()
     {
         danupe()->view()->get('plugin-user', 'users/create', ['title' => 'Create User']);
-        return $response;
+
     }
 
-    public function create_post(Request $request, Response $response)
+    public function create_post()
     {
 
         $validator = new Validate();
@@ -70,7 +70,7 @@ class UserController extends Controller
         }
     }
 
-    public function update_post(Request $request, Response $response, array $args)
+    public function update_post()
     {
         $validator = new Validate();
 
@@ -108,8 +108,8 @@ class UserController extends Controller
         }
     }
 
-    public function delete_post(Request $request, Response $response, array $args)
-    {
-        return $this->redirect('/' . danupe()->env()->get('DANUPE_ADMIN_PREFIX') . '/users/create');
-    }
+    // public function delete_post()
+    // {
+    //     return $this->redirect('/' . danupe()->env()->get('DANUPE_ADMIN_PREFIX') . '/users/create');
+    // }
 }

@@ -2,19 +2,16 @@
 
 namespace Danupe\Plugin\User\Middlewares;
 
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Danupe\Core\Classes\Request;
 
 class AuthMiddleware
 {
-    public function __invoke(Request $request, RequestHandler $handler): Response
+    public function __invoke(Request $request, callable $next)
     {
         if (empty(danupe()->session()->get('user'))) {
-            $response = new \Slim\Psr7\Response();
             danupe()->view()->get('plugin-user', 'frontend/403', ['title' => 'error 403']);
-            return $response->withStatus(403);
+            exit;
         }
-        return $handler->handle($request);
+        $next($request);
     }
 }

@@ -4,13 +4,10 @@ namespace Danupe\Plugin\User\Controllers;
 
 use Danupe\Core\Classes\Controller;
 use Danupe\Plugin\Database\Classes\Database;
-use PDO;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
 
 class AuthController extends Controller
 {
-    public function login_post(Request $request, Response $response)
+    public function login_post($request)
     {
         $data = $request->getParsedBody();
 
@@ -26,9 +23,9 @@ class AuthController extends Controller
         }
     }
 
-    public function logout_action(Request $request, Response $response)
+    public function logout_action()
     {
-        session_destroy();
-        return $response->withHeader('Location', '/login')->withStatus(302);
+        danupe()->session()->destroy();
+        return $this->redirectWithSuccess('/', 'logged out successfully');
     }
 }
