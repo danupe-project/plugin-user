@@ -68,4 +68,12 @@ const lineConfig = {
 
 // change this to the id of your chart element in HMTL
 const lineCtx = document.getElementById('line')
-window.myLine = new Chart(lineCtx, lineConfig)
+if (lineCtx) {
+  try {
+    window.myLine = new Chart(lineCtx, lineConfig)
+  } catch(e) {
+    console.error('Line chart init failed', e)
+  }
+} else {
+  console.debug('Skipping line chart init: #line not found')
+}

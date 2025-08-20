@@ -32,4 +32,12 @@ const pieConfig = {
 
 // change this to the id of your chart element in HMTL
 const pieCtx = document.getElementById('pie')
-window.myPie = new Chart(pieCtx, pieConfig)
+if (pieCtx) {
+  try {
+    window.myPie = new Chart(pieCtx, pieConfig)
+  } catch(e) {
+    console.error('Pie chart init failed', e)
+  }
+} else {
+  console.debug('Skipping pie chart init: #pie not found')
+}

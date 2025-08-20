@@ -21,12 +21,42 @@ class UserController extends Controller
 
     public function table()
     {
-        $total = danupe()->plugin('database', 'database')->table('users')->count();
-        $users = new User();
-        $data = $users->all();
+        // Basic server-side pagination + search + sort for AJAX table
+        $db = danupe()->plugin('database', 'database')->table('users');
+        $limit = (int) danupe()->input()->get('limit', 10);
+        $offset = (int) danupe()->input()->get('offset', 0);
+        $search = trim((string) danupe()->input()->get('search', ''));
+        $sort = (string) danupe()->input()->get('sort', ''); // e.g. email:asc
+
+        if ($search !== '') {
+            // naive search on email and role columns
+            $like = '%' . $search . '%';
+            $db->whereRaw('(email LIKE :searchemail OR role LIKE :searchrole)', ['searchemail' => $like, 'searchrole' => $like]);
+        }
+
+        // total BEFORE limit/offset
+        $total = $db->count();
+
+        if ($sort) {
+            [$col, $dir] = array_pad(explode(':', $sort), 2, 'asc');
+            $colWhitelist = ['id','email','role'];
+            if (in_array($col, $colWhitelist)) {
+                $dir = strtolower($dir) === 'dsc' ? 'desc' : 'asc';
+                $db->orderBy([$col => $dir]);
+            }
+        } else {
+            $db->orderBy(['id' => 'asc']);
+        }
+
+        $rows = $db->offset($offset)->limit($limit)->get();
+
         $this->json([
             'total' => $total,
-            'data' => $data
+            'data' => array_map(fn($r) => [
+                'id' => $r['id'],
+                'email' => $r['email'],
+                'role' => $r['role'],
+            ], $rows)
         ]);
     }
 

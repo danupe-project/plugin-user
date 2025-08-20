@@ -19,7 +19,8 @@ function littleBIGtable(settings) {
             },
             headers: {
               'Content-Type': 'application/json',
-              'X-Requested-With': 'littleBIGtable'
+              'X-Requested-With': 'littleBIGtable',
+              'Accept': 'application/json'
             },
             formatters: {},
             icons: '../dist/icons.svg',
@@ -28,6 +29,7 @@ function littleBIGtable(settings) {
         meta: {
             loading: false,
             status: null,
+            debugHtml: null,
         },
         // stores the parameters passed in query string
         params: {
@@ -64,22 +66,62 @@ function littleBIGtable(settings) {
           }
           this.meta.loading = true;
           this.setStatus(this.settings.messages.loading);
-          fetch(this.settings.url + this.getUrlParams(), {headers: this.settings.headers})
-            .then(response => {
-              return response.json()
-          }).then(json => {
-                this.rows = [];
-                this.params.total = json.total;
-                for (i in json.data){
-                    this.addRow(json.data[i]);
-                }
-            }).then(() => {
-                this.meta.loading = false;
-                this.setStatus(this.getSummary(this.settings.messages.summary));
-            }).catch(error => {
-                console.error('Network fetch failed: ', error);
-                this.setStatus(this.settings.messages.failed);
-            });
+                    fetch(this.settings.url + this.getUrlParams(), {headers: this.settings.headers})
+                        .then(async response => {
+                            const contentType = response.headers.get('Content-Type') || '';
+                            if (!response.ok) {
+                                const text = await response.text().catch(() => '');
+                                throw new Error('HTTP '+response.status+' '+response.statusText+ (text ? (' - '+text.substring(0,120)) : ''));
+                            }
+                            // Expect JSON. If content-type not json, read text and attempt detection.
+                            if (!/json/i.test(contentType)) {
+                                const text = await response.text();
+                                                                if (/^\s*</.test(text)) {
+                                                                    // Looks like HTML (maybe login redirect or error page)
+                                                                    const snippet = text.substring(0,400);
+                                                                    this.meta.debugHtml = snippet;
+                                                                    console.warn('littleBIGtable HTML response snippet:', snippet);
+                                                                    throw new Error('Non-JSON response (HTML) - possible session timeout or misconfigured endpoint');
+                                                }
+                                // Try to parse as JSON anyway
+                                try {
+                                    return JSON.parse(text);
+                                } catch(e) {
+                                    throw new Error('Failed to parse response as JSON');
+                                }
+                            }
+                            return response.json();
+                        })
+                        .then(json => {
+                            if (!json || typeof json !== 'object') {
+                                throw new Error('Invalid JSON payload');
+                            }
+                            if (!Array.isArray(json.data)) {
+                                throw new Error('Malformed JSON: missing data array');
+                            }
+                            this.rows = [];
+                            this.params.total = parseInt(json.total) || 0;
+                            for (i in json.data){
+                                    this.addRow(json.data[i]);
+                            }
+                            this.meta.loading = false;
+                            this.setStatus(this.getSummary(this.settings.messages.summary));
+                        })
+                        .catch(error => {
+                            console.error('littleBIGtable fetch error:', error);
+                            this.meta.loading = false;
+                            // Provide more specific messaging when we can
+                                            if (/Non-JSON response/.test(error.message)) {
+                                                const extra = this.meta.debugHtml ? ('<pre style=\"white-space:pre-wrap;max-height:160px;overflow:auto;border:1px solid #ddd;padding:4px;margin-top:4px;\">'+this.meta.debugHtml.replace(/</g,'&lt;')+'</pre>') : '';
+                                                this.setStatus('Session expired oder HTML Antwort. Bitte neu laden oder Snippet melden.' + extra);
+                            } else if (/HTTP 401|HTTP 403/.test(error.message)) {
+                                this.setStatus('Not authorized');
+                            } else if (/HTTP 5/.test(error.message)) {
+                                this.setStatus('Server error');
+                            } else {
+                                this.setStatus(this.settings.messages.failed);
+                            }
+                        });
         },
         // adds the data row to the table
         addRow: function(data) {
@@ -105,8 +147,8 @@ function littleBIGtable(settings) {
         // returns the url params for the GET request
         getUrlParams: function() {
             let str = '?'+this.settings.args.limit+'='+this.params.limit+'&'+this.settings.args.offset+'='+this.params.offset;
-            if (this.params.search) {
-                str+= '&'+this.settings.args.search+'='+this.params.search;
+                if (this.params.search) {
+                    str+= '&'+this.settings.args.search+'='+encodeURIComponent(this.params.search);
             }
 
             let sort = null;
@@ -191,11 +233,17 @@ function littleBIGtable(settings) {
         },
         // returns the required icon for the sort state
         getSortIcon: function(col) {
-            let icon = 'none';
-            if (undefined !== this.sort[col]) {
-                icon = this.sort[col];
-            }
-            return '<svg class="icon"><use xlink:href="' + this.settings.icons + '#sort-' + icon + '"></use></svg>';
+                // Use simple unicode arrows to keep header compact and avoid missing icon assets
+                if (undefined === this.sort[col]) {
+                    return '<span class="sort-indicator" style="font-size:0.7rem;opacity:.5;">&#9675;</span>'; // hollow circle as neutral
+                }
+                if (this.sort[col] === 'asc') {
+                    return '<span class="sort-indicator" style="font-size:0.7rem;">&#9650;</span>'; // up triangle
+                }
+                if (this.sort[col] === 'dsc') {
+                    return '<span class="sort-indicator" style="font-size:0.7rem;">&#9660;</span>'; // down triangle
+                }
+                return '';
         },
         // set the number of rows to show per page and saves preference in localStorage
         // tries to keep the current rows on the page
@@ -246,22 +294,29 @@ function littleBIGtable(settings) {
             this.params.offset = this.getPrevPageOffset();
             this.fetch();
         },
-        // todo jump to a particular page by number
-        goToPage: function() {
-        },
-        // handle the user search input, always returning to the start of the results 
+        // performs a new search (reset offset then fetch)
         doSearch: function() {
             this.params.offset = 0;
+            // Normalize empty string to null so param omitted
+            if (this.params.search !== null && this.params.search !== undefined && this.params.search.toString().trim() === '') {
+                this.params.search = null;
+            }
             this.fetch();
         },
-        // handle the column sort
+        // handle header click to sort a column
         doSort: function(col) {
-            if (false == this.settings.multisort) {
-                let state = this.sort[col];
+            // single sort resets other columns unless multisort enabled
+            if (!this.settings.multisort) {
+                // preserve existing state for this col only
+                const current = this.sort[col];
                 this.sort = {};
-                this.sort[col] = state;
+                if (current) {
+                    this.sort[col] = current; // will be toggled below
+                }
             }
             this.toggleSortColumn(col);
+            // if column toggled off (removed) and no other sort, backend falls back to default order
+            this.params.offset = 0;
             this.fetch();
         },
         debug: function() {

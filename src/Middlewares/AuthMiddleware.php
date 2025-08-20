@@ -22,11 +22,19 @@ class AuthMiddleware
         if (empty($sessionUser)) {
             $loginRequired = danupe()->language()->get('auth.login_required') ?? 'Please log in first.';
             danupe()->session()->set('errors', [$loginRequired]);
-            // Test-Hook: ermöglicht Tests den Redirect abzufangen
-            if (isset($GLOBALS['__test_redirect_capture'])) {
-                $GLOBALS['__test_redirect_capture'] = '/login';
+            $requestedWith = strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '');
+            if ($requestedWith === 'littlebigtable') {
+                // JSON Antwort für AJAX Tabellen Requests
+                http_response_code(401);
+                header('Content-Type: application/json');
+                echo json_encode(['error' => 'unauthenticated', 'message' => $loginRequired]);
             } else {
-                header('Location: /login');
+                // Test-Hook: ermöglicht Tests den Redirect abzufangen
+                if (isset($GLOBALS['__test_redirect_capture'])) {
+                    $GLOBALS['__test_redirect_capture'] = '/login';
+                } else {
+                    header('Location: /login');
+                }
             }
             exit;
         }
