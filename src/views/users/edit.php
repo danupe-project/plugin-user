@@ -42,6 +42,15 @@
     <?php echo danupe()->plugin('user', 'form')->submit(); ?>
 </form>
 
+<hr class="my-8" />
+
+<h2 class="text-xl font-semibold mb-2 text-red-700">Danger Zone</h2>
+<form method="POST" action="/<?php echo danupe()->env()->get('DANUPE_ADMIN_PREFIX'); ?>/users/delete_post" class="flex items-center gap-4">
+    <?php echo danupe()->plugin('user', 'form')->csrf(); ?>
+    <?php echo danupe()->plugin('user', 'form')->input('id', 'hidden', danupe()->data()->get($user, 'id')); ?>
+    <button type="submit" onclick="return confirm('Are you sure you want to delete this user? This action cannot be undone.');" class="btn btn-solid-danger">Delete User</button>
+</form>
+
 
 
 <?php danupe()->view()->get('plugin-user', 'footer'); ?>

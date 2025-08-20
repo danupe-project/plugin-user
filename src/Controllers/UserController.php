@@ -30,12 +30,21 @@ class UserController extends Controller
         ]);
     }
 
-    public function edit($args)
+    public function edit($request, $id)
     {
-        $user = new User();
-        $user = $user->first(danupe()->data()->get($args, 'id'));
-        danupe()->view()->get('plugin-user', 'users/edit', ['user' => $user, 'title' => 'Edit User']);
+        $userModel = new User();
 
+        if (empty($id)) {
+            return $this->redirectWithErrors('/' . danupe()->env()->get('DANUPE_ADMIN_PREFIX') . '/users', 'User ID missing');
+        }
+
+        try {
+            $user = $userModel->first($id);
+        } catch (\Exception $e) {
+            return $this->redirectWithErrors('/' . danupe()->env()->get('DANUPE_ADMIN_PREFIX') . '/users', 'User not found');
+        }
+
+        danupe()->view()->get('plugin-user', 'users/edit', ['user' => $user, 'title' => 'Edit User']);
     }
 
     public function create()
@@ -108,8 +117,38 @@ class UserController extends Controller
         }
     }
 
-    // public function delete_post()
-    // {
-    //     return $this->redirect('/' . danupe()->env()->get('DANUPE_ADMIN_PREFIX') . '/users/create');
-    // }
+    public function delete_post()
+    {
+        $validator = new Validate();
+        $rules = [
+            'id' => 'required|integer',
+        ];
+
+        $payload = danupe()->input()->only(['id']);
+        $validationResult = $validator->validate($payload, $rules);
+        $id = danupe()->data()->get($payload, 'id');
+        $prefix = danupe()->env()->get('DANUPE_ADMIN_PREFIX');
+
+        if ($validationResult) {
+            // (Optional) Prevent deleting currently authenticated user to avoid lockout
+            try {
+                $currentUser = danupe()->auth()->user();
+                if ($currentUser && (int) danupe()->data()->get($currentUser, 'id') === (int) $id) {
+                    return $this->redirectWithErrors('/' . $prefix . '/users/edit/' . $id, 'You cannot delete your own user while logged in.');
+                }
+            } catch (\Throwable $t) {
+                // Ignore if auth() helper not available or throws
+            }
+
+            try {
+                $user = new User();
+                $user->delete($id);
+            } catch (\Throwable $e) {
+                return $this->redirectWithErrors('/' . $prefix . '/users/edit/' . $id, 'User could not be deleted.');
+            }
+            return $this->redirectWithSuccess('/' . $prefix . '/users', 'User deleted successfully');
+        } else {
+            return $this->redirectWithErrors('/' . $prefix . '/users/edit/' . $id, $validator->getErrors());
+        }
+    }
 }

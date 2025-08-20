@@ -6,10 +6,29 @@ return [
         'auth' => 'Danupe\Plugin\User\Middlewares\AuthMiddleware',
     ],
 
+    'language' => [
+        'en' => [
+            'auth.login_required' => 'Please log in first.',
+            'auth.forbidden' => 'You are not allowed to access this resource.',
+            'auth.error_403' => 'Access denied',
+            'navigation.dashboard' => 'Dashboard',
+            'navigation.users' => 'Users',
+            'navigation.users_create' => 'Create User',
+        ],
+        'de' => [
+            'auth.login_required' => 'Bitte zuerst einloggen.',
+            'auth.forbidden' => 'Du hast keine Berechtigung für diese Ressource.',
+            'auth.error_403' => 'Zugriff verweigert',
+            'navigation.dashboard' => 'Übersicht',
+            'navigation.users' => 'Benutzer',
+            'navigation.users_create' => 'Benutzer anlegen',
+        ],
+    ],
+
     'navigation' => [
-        '/' . $prefix . '/dashboard' => ['title' => 'Dashboard', 'icon' => 'fa fa-home', 'sort' => 1, 'parent' => ''],
-        '/' . $prefix . '/users' => ['title' => 'Users', 'icon' => 'fa fa-users', 'sort' => 100, 'parent' => ''],
-        '/' . $prefix . '/users/create' => ['title' => 'Users create', 'icon' => 'fa fa-users', 'sort' => 101, 'parent' => '/' . $prefix . '/users'],
+        '/' . $prefix . '/dashboard' => ['title' => 'navigation.dashboard', 'icon' => 'fa fa-home', 'sort' => 1, 'parent' => '', 'roles' => ['editor','user','admin'], 'translate' => true],
+        '/' . $prefix . '/users' => ['title' => 'navigation.users', 'icon' => 'fa fa-users', 'sort' => 100, 'parent' => '', 'roles' => ['admin'], 'translate' => true],
+        '/' . $prefix . '/users/create' => ['title' => 'navigation.users_create', 'icon' => 'fa fa-users', 'sort' => 101, 'parent' => '/' . $prefix . '/users', 'roles' => ['admin'], 'translate' => true],
     ],
     'routes' => [
         '/login' => [
@@ -24,7 +43,7 @@ return [
             'action' => 'logout_action',
             'method' => 'GET',
             'middlewares' => ['auth'],
-            'roles' => ['user', 'admin'],
+            'roles' => ['user', 'admin', 'editor'],
         ],
         '/' . $prefix . '/js/littleBigTable.js' => [
             'controller' => 'Danupe\Core\Classes\AssetController',
