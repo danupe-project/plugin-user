@@ -1,7 +1,7 @@
 <?php
 if (danupe()->session()->has('errors') || danupe()->session()->has('success')) {
 ?>
-    <div class="mt-14">
+    <div class="mt-2">
         <?php if (danupe()->session()->has('errors') && is_array(danupe()->session()->get('errors'))) : ?>
             <div class="alert alert-error">
                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
