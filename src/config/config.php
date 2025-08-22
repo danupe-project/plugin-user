@@ -116,6 +116,13 @@ return [
             'middlewares' => ['auth'],
             'roles' => ['editor', 'user', 'admin'],
         ],
+        '/' . $prefix => [
+            'controller' => 'Danupe\Plugin\User\Controllers\HomeController',
+            'action' => 'dashboard',
+            'method' => 'GET',
+            'middlewares' => ['auth'],
+            'roles' => ['editor', 'user', 'admin'],
+        ],
         // user management
         '/' . $prefix . '/users' => [
             'controller' => 'Danupe\Plugin\User\Controllers\UserController',
