@@ -62,6 +62,39 @@
         .table thead th {
             border: none !important;
         }
+        
+        /* Fixe Spaltenbreiten für stabile Tabellen */
+        .table {
+            table-layout: fixed !important;
+            width: 100% !important;
+        }
+        
+        /* Dynamische Spaltenbreiten: erste 20px, mittlere 100px, letzte 40px */
+        .table th {
+            width: 100px; /* Standard für alle mittleren Spalten */
+        }
+        .table th:first-child {
+            width: 20px !important; /* Erste Spalte immer 20px */
+        }
+        .table th:last-child {
+            width: 40px !important; /* Letzte Spalte immer 40px */
+        }
+        .table td {
+            width: 100px; /* Standard für alle mittleren Spalten */
+        }
+        .table td:first-child {
+            width: 20px !important; /* Erste Spalte immer 20px */
+        }
+        .table td:last-child {
+            width: 40px !important; /* Letzte Spalte immer 40px */
+        }
+        
+        /* Verhindere Textumbruch in Tabellenzellen */
+        .table td {
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
     </style>
 
 </head>
