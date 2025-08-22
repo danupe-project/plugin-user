@@ -166,5 +166,25 @@ return [
             'middlewares' => ['auth'],
             'roles' => ['admin'],
         ],
+        
+        // JavaScript assets
+        '/' . $prefix . '/js/littleBigTable.js' => [
+            'controller' => 'Danupe\Core\Classes\AssetController',
+            'action' => 'load',
+            'method' => 'GET',
+            'middlewares' => [],
+            'roles' => ['guest'],
+            'path' => danupe()->path()->plugin('plugin-user') . '/src/views/assets/js/littleBigTable.js',
+            'type' => 'javascript',
+        ],
+        '/' . $prefix . '/js/init-alpine.js' => [
+            'controller' => 'Danupe\Core\Classes\AssetController',
+            'action' => 'load',
+            'method' => 'GET',
+            'middlewares' => [],
+            'roles' => ['guest'],
+            'path' => danupe()->path()->plugin('plugin-user') . '/src/views/assets/js/init-alpine.js',
+            'type' => 'javascript',
+        ],
     ],
 ];
