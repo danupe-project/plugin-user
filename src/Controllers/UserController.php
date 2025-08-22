@@ -5,7 +5,6 @@ namespace Danupe\Plugin\User\Controllers;
 use Danupe\Core\Classes\Controller;
 use Danupe\Plugin\User\Classes\Validate;
 use Danupe\Plugin\User\Models\User;
-use Danupe\Plugin\User\Services\UserTableService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -23,15 +22,42 @@ class UserController extends Controller
 
     public function table()
     {
-        $service = new UserTableService();
-        $params = [
-            'limit'  => danupe()->input()->get('limit', 10),
-            'offset' => danupe()->input()->get('offset', 0),
-            'search' => danupe()->input()->get('search', ''),
-            'sort'   => danupe()->input()->get('sort', ''),
-        ];
-        $result = $service->fetch($params);
-        $this->json($result);
+        $db = danupe()->plugin('database','database')->table('users');
+        $limit = (int) danupe()->input()->get('limit', 10);
+        $offset = (int) danupe()->input()->get('offset', 0);
+        $search = trim((string) danupe()->input()->get('search', ''));
+        $sort = (string) danupe()->input()->get('sort', '');
+        
+        // Apply search filter
+        if ($search !== '') { 
+            $like = '%'.$search.'%'; 
+            $db->whereRaw('(`email` LIKE :s1 OR `role` LIKE :s2)', ['s1'=>$like,'s2'=>$like]); 
+        }
+        
+        // Get total count for pagination
+        $total = $db->count();
+        
+        // Apply sorting
+        if ($sort) {
+            [$column, $direction] = array_pad(explode(':', $sort), 2, 'asc');
+            $allowedColumns = ['id', 'email', 'role'];
+            if (in_array($column, $allowedColumns)) {
+                $direction = strtolower($direction) === 'dsc' ? 'desc' : 'asc';
+                $db->orderBy([$column => $direction]);
+            }
+        } else {
+            $db->orderBy(['id' => 'asc']);
+        }
+        
+        // Get paginated results
+        $rows = $db->offset($offset)->limit($limit)->get();
+        $data = array_map(fn($r) => [
+            'id' => $r['id'],
+            'email' => $r['email'],
+            'role' => $r['role']
+        ], $rows);
+        
+        $this->json(['total' => $total, 'data' => $data]);
     }
 
     public function edit($request, $id)
