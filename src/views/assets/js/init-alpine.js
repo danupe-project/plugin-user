@@ -60,3 +60,7 @@ function data() {
     },
   }
 }
+
+// Moved to core: /danupe/core/src/views/assets/js/init-alpine.js
+// This stub kept temporarily to avoid 404 if route cache stale.
+// Safe to delete after deployment cache clear.

@@ -13,9 +13,13 @@ if (danupe()->session()->has('errors') || danupe()->session()->has('success')) {
 
                         <ul>
                             <?php foreach (danupe()->session()->get('errors') as $error): ?>
-                                <?php foreach ($error as $key => $value): ?>
-                                    <li><?php echo $value; ?></li>
-                                <?php endforeach; ?>
+                                <?php if (is_array($error)): ?>
+                                    <?php foreach ($error as $key => $value): ?>
+                                        <li><?php echo $value; ?></li>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <li><?php echo $error; ?></li>
+                                <?php endif; ?>
                             <?php endforeach; ?>
                             <?php
                             danupe()->session()->remove('errors');
@@ -57,9 +61,13 @@ if (danupe()->session()->has('errors') || danupe()->session()->has('success')) {
                     <span class="text-content2">
                         <ul>
                             <?php foreach (danupe()->session()->get('success') as $success): ?>
-                                <?php foreach ($success as $key => $value): ?>
-                                    <li><?php echo $value; ?></li>
-                                <?php endforeach; ?>
+                                <?php if (is_array($success)): ?>
+                                    <?php foreach ($success as $key => $value): ?>
+                                        <li><?php echo $value; ?></li>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <li><?php echo $success; ?></li>
+                                <?php endif; ?>
                             <?php endforeach; ?>
                             <?php
                             danupe()->session()->remove('success');
