@@ -49,10 +49,18 @@
             margin-left: 4px;
             color: #6b7280;
             vertical-align: middle;
+            border:none !important;
         }
         th.cursor-pointer {
             line-height: 1.25;
             padding: 8px 12px;
+            border: none !important;
+        }
+        th.cursor-pointer span{
+            border: none !important;
+        }
+        .table thead th {
+            border: none !important;
         }
     </style>
 
