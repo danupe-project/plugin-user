@@ -40,6 +40,21 @@
         defer></script>
     <script src="/<?php echo danupe()->plugin('user', 'admin')->getPrefix(); ?>/js/charts-lines.js" defer></script>
     <script src="/<?php echo danupe()->plugin('user', 'admin')->getPrefix(); ?>/js/charts-pie.js" defer></script>
+    
+    <style>
+        .sort-icon {
+            display: inline-block;
+            font-size: 12px;
+            line-height: 1;
+            margin-left: 4px;
+            color: #6b7280;
+            vertical-align: middle;
+        }
+        th.cursor-pointer {
+            line-height: 1.25;
+            padding: 8px 12px;
+        }
+    </style>
 
 </head>
 

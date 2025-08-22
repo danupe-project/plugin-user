@@ -191,11 +191,16 @@ function littleBIGtable(settings) {
         },
         // returns the required icon for the sort state
         getSortIcon: function(col) {
-            let icon = 'none';
-            if (undefined !== this.sort[col]) {
-                icon = this.sort[col];
+            if (undefined === this.sort[col]) {
+                return '<span class="sort-icon">↕</span>';
             }
-            return '<svg class="icon"><use xlink:href="' + this.settings.icons + '#sort-' + icon + '"></use></svg>';
+            if (this.sort[col] === 'asc') {
+                return '<span class="sort-icon">↑</span>';
+            }
+            if (this.sort[col] === 'dsc') {
+                return '<span class="sort-icon">↓</span>';
+            }
+            return '<span class="sort-icon">↕</span>';
         },
         // set the number of rows to show per page and saves preference in localStorage
         // tries to keep the current rows on the page
