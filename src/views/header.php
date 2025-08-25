@@ -74,20 +74,12 @@
             width: 100px; /* Standard für alle mittleren Spalten */
         }
         .table th:first-child {
-            width: 20px !important; /* Erste Spalte immer 20px */
+            width: 35px !important; /* Erste Spalte immer 20px */
         }
         .table th:last-child {
-            width: 40px !important; /* Letzte Spalte immer 40px */
+            width: 70px !important; /* Letzte Spalte immer 40px */
         }
-        .table td {
-            width: 100px; /* Standard für alle mittleren Spalten */
-        }
-        .table td:first-child {
-            width: 20px !important; /* Erste Spalte immer 20px */
-        }
-        .table td:last-child {
-            width: 40px !important; /* Letzte Spalte immer 40px */
-        }
+      
         
         /* Verhindere Textumbruch in Tabellenzellen */
         .table td {
@@ -254,6 +246,6 @@
                 </div>
             </header>
             <main class="h-full overflow-y-auto">
-                <div class="container px-6 mx-auto grid">
+                <div class="container px-1 md:px-6 mx-auto grid">
 
                     <?php danupe()->view()->get('plugin-user', 'alert'); ?>
