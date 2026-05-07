@@ -27,39 +27,42 @@
     $sessionUser = danupe()->session()->get('user');
     $currentRole = $sessionUser['role'] ?? 'guest';
 
-    $isAllowed = function($url, $navItemRoles = null) use ($allRoutes, $currentRole) {
+    $isAllowed = function($url, $navItemRoles = null) use ($allRoutes, $currentRole) : bool {
+        $rolePlugin = danupe()->plugin('user', 'role');
+
         if (is_array($navItemRoles)) {
-            return in_array($currentRole, $navItemRoles, true);
+            return $rolePlugin->isAllowed($currentRole, $navItemRoles);
         }
-        // Versuche exaktes Matching zuerst
+
+        $rolesFromRoute = null;
         if (isset($allRoutes[$url])) {
-            $roles = $allRoutes[$url]['roles'] ?? null;
-            if ($roles === null) return true; // Keine Rollen definiert -> sichtbar
-            return in_array($currentRole, $roles, true);
-        }
-        // Fallback: Pattern Matching (mit {id} oder optionalen Segmenten)
-        foreach ($allRoutes as $routePath => $definition) {
-            $pattern = $routePath;
-            $pattern = preg_replace_callback('#\[([^\[\]]+)\]#', function ($m) {
-                $inner = $m[1];
-                $inner = preg_replace('#\{[^/]+\}#', '[^/]+', $inner);
-                return '(?:' . $inner . ')?';
-            }, $pattern);
-            $pattern = preg_replace('#\{[^/]+\}#', '[^/]+', $pattern);
-            $pattern = '#^' . rtrim($pattern,'/') . '$#';
-            if (preg_match($pattern, $url)) {
-                $roles = $definition['roles'] ?? null;
-                if ($roles === null) return true;
-                return in_array($currentRole, $roles, true);
+            $rolesFromRoute = $allRoutes[$url]['roles'] ?? null;
+        } else {
+            $requestPath = rtrim(strtok($url, '?'), '/') ?: '/';
+            foreach ($allRoutes as $routePath => $definition) {
+                $pattern = $routePath;
+                $pattern = preg_replace_callback('#\[([^\[\]]+)\]#', function ($m) {
+                    $inner = $m[1];
+                    $inner = preg_replace('#\{[^/]+\}#', '[^/]+', $inner);
+                    return '(?:' . $inner . ')?';
+                }, $pattern);
+                $pattern = preg_replace('#\{[^/]+\}#', '[^/]+', $pattern);
+                $patternPath = rtrim($pattern, '/');
+                if ($patternPath === '' && $pattern === '/') $patternPath = '/';
+                
+                if (preg_match('#^' . $patternPath . '$#', $requestPath)) {
+                    $rolesFromRoute = $definition['roles'] ?? null;
+                    break;
+                }
             }
         }
-        return true; // Standard: sichtbar
+
+        return $rolePlugin->isAllowed($currentRole, $rolesFromRoute);
     };
 
     foreach ($navigationItems as $url => $navigationItem) {
         if (danupe()->data()->get($navigationItem, 'parent', false) == false) {
-            $navItemRoles = danupe()->data()->get($navigationItem,'roles');
-            if (!$isAllowed($url, $navItemRoles)) continue; ?>
+            if (!$isAllowed($url, $navigationItem['roles'] ?? null)) continue; ?>
                 <li class="relative px-6 py-3">
                     <a href="<?php echo $url; ?>" class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200">
                         <i class="<?php echo danupe()->data()->get($navigationItem, 'icon'); ?> mr-3"></i>
