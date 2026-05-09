@@ -20,4 +20,8 @@ class HomeController extends Controller
     {
         danupe()->view()->get('plugin-user', 'index', ['title' => 'Login']);
     }
+    public function system()
+    {
+        danupe()->view()->get('plugin-user', 'system', ['title' => 'System']);
+    }
 }

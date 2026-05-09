@@ -12,6 +12,7 @@ return [
             'auth.forbidden' => 'You are not allowed to access this resource.',
             'auth.error_403' => 'Access denied',
             'navigation.dashboard' => 'Dashboard',
+            'navigation.system' => 'System',
             'navigation.users' => 'Users',
             'navigation.users_create' => 'Create User',
         ],
@@ -20,6 +21,7 @@ return [
             'auth.forbidden' => 'Du hast keine Berechtigung für diese Ressource.',
             'auth.error_403' => 'Zugriff verweigert',
             'navigation.dashboard' => 'Übersicht',
+            'navigation.system' => 'System',
             'navigation.users' => 'Benutzer',
             'navigation.users_create' => 'Benutzer anlegen',
         ],
@@ -29,6 +31,7 @@ return [
         '/' . $prefix . '/dashboard' => ['title' => 'Dashboard', 'icon' => 'fa fa-home', 'sort' => 1, 'parent' => '', 'roles' => ['editor','user','admin'], 'translate' => true],
         '/' . $prefix . '/users' => ['title' => 'Users', 'icon' => 'fa fa-users', 'sort' => 100, 'parent' => '', 'roles' => ['admin'], 'translate' => true],
         '/' . $prefix . '/users/create' => ['title' => 'Create User', 'icon' => 'fa fa-users', 'sort' => 101, 'parent' => '/' . $prefix . '/users', 'roles' => ['admin'], 'translate' => true],
+        '/' . $prefix . '/system' => ['title' => 'System', 'icon' => 'fa fa-cogs', 'sort' => 500000, 'parent' => '', 'roles' => ['admin'], 'translate' => true],
     ],
     'routes' => [
         // auth & session
@@ -108,7 +111,13 @@ return [
             'path' => danupe()->path()->plugin('plugin-user') . '/src/views/assets/css/tailwind.output.css',
             'type' => 'css',
         ],
-        // dashboard (single canonical path)
+        '/' . $prefix . '/system' => [
+            'controller' => 'Danupe\Plugin\User\Controllers\HomeController',
+            'action' => 'system',
+            'method' => 'GET',
+            'middlewares' => ['auth'],
+            'roles' => ['admin'],
+        ],
         '/' . $prefix . '/dashboard' => [
             'controller' => 'Danupe\Plugin\User\Controllers\HomeController',
             'action' => 'dashboard',
@@ -123,7 +132,6 @@ return [
             'middlewares' => ['auth'],
             'roles' => ['editor', 'user', 'admin'],
         ],
-        // user management
         '/' . $prefix . '/users' => [
             'controller' => 'Danupe\Plugin\User\Controllers\UserController',
             'action' => 'index',
